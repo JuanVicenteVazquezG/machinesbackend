@@ -1,3 +1,15 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+# Routes User Controller
+
+user:
+    path: /user
+    controller: App\Controller\UserController::index
+
+# Routes Machines Controller
+
+machines:
+    path: /machines
+    controller: App\Controller\MachinesController::index
