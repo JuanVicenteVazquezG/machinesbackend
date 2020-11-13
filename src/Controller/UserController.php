@@ -167,4 +167,96 @@ class UserController extends AbstractController
         // If all is ok response
         return $this->resjson($data);
     }
+
+    public function edit(Request $request, JwtAuth $jwt_auth)
+    {
+        // get header of auth
+        $token = $request->headers->get('Authorization');
+
+        // Create a method to check if the token is correct
+        $authCheck = $jwt_auth->checkToken($token);
+
+        // default answer
+        $data = [
+            'status'=>'error',
+            'code'=>400,
+            'message'=>'User not updated',
+            ];
+
+        // If is correct, make the update of the user
+        if ($authCheck) {
+            //Update the user info
+           
+            // get entity manager
+            $em = $this->getDoctrine()->getManager();
+             
+            // get Identified user data info
+
+            $identity = $jwt_auth->checkToken($token, true);
+            
+            // Full Update User
+
+            $user_repo = $this->getDoctrine()->getRepository(User::class);
+
+            $user = $user_repo->findOneBy(['id'=>$identity->sub]);
+
+            // Take data by Post
+
+            $json = $request->get('json', null);
+            $params = json_decode($json);
+
+            // Check & validate Data
+
+            if (!empty($json)) {
+                $name = (!empty($params->name)) ? $params->name : null;
+                $surname= (!empty($params->surname)) ? $params->surname : null;
+                $email= (!empty($params->email)) ? $params->email : null;
+            
+                $validator = Validation::createValidator();
+                $validate_email = $validator->validate($email, [ new Email()]);
+                
+                if (!empty($email) &&
+                 count($validate_email)==0 &&
+                 !empty($name) &&
+                 !empty($surname)) {
+                    $data = [
+                        'status'=>'sucess',
+                        'code'=> 200,
+                        'message'=> 'VALIDATED!'
+                        ];
+                    // Assign new Data to the user Object
+                    $user->setEmail($email);
+                    $user->setName($name);
+                    $user->setSurname($surname);
+                  
+                    // check duplicates data
+                    $isset_user = $user_repo->findBy([
+                        'email'=>$email
+                    ]);
+                    
+                    if (count($isset_user)==0 || $identity->email==$email) {
+                        
+            
+                    // save changes on db
+                        $em->persist($user);
+                        $em->flush();
+
+                        $data = [
+                            'status'=> 'success',
+                            'code'=> 200,
+                            'message'=> 'User updated successfully!',
+                            'user'=>$user
+                        ];
+                    } else {
+                        $data = [
+                            'status'=> 'error',
+                            'code'=> 400,
+                            'message'=> 'You cannot use this email!',
+                        ];
+                    }
+                }
+            }
+        }
+        return $this->resjson($data);
+    }
 }
