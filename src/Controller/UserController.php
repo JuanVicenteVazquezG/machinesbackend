@@ -157,7 +157,7 @@ class UserController extends AbstractController
                 $pwd = hash('sha256', $password);
                 // if all is correct, call service to identify the user(jwt, token or an object)
                 if ($gettoken) {
-                    $signup = $jwt_auth->signup($email, $password, $gettoken);
+                    $signup = $jwt_auth->signup($email, $pwd, $gettoken);
                 } else {
                     $signup = $jwt_auth->signup($email, $pwd);
                 }
