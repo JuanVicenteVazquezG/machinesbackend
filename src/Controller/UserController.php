@@ -8,8 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Email;
+
+
 use App\Entity\User;
 use App\Entity\Machine;
+use App\Services\JwtAuth;
 
 // use Symfony\Component\HttpFoundation\Response;
 
@@ -120,5 +123,48 @@ class UserController extends AbstractController
         }
         // make response in json
         return new JsonResponse($data);
+    }
+
+    public function login(Request $request, JwtAuth $jwt_auth)
+    {
+        //Receive Data by Post
+        $json = $request->get('json', null);
+
+        // Decode the json
+        $params = json_decode($json);
+
+        //Array by Default to return
+        $data = [
+                'status'=>'success',
+                'code'=>200,
+                'message'=> 'User cannot be identified!'
+            ];
+        //check and validate data
+        if ($json !== null) {
+            $email = (!empty($params->email)) ? $params->email: null;
+            $password = (!empty($params->password)) ? $params->password: null;
+            $gettoken =  (!empty($params->gettoken)) ? $params->gettoken: null;
+
+            $validator = Validation::createValidator();
+            $validate_email = $validator->validate(
+                $email,
+                [ new Email()]
+            );
+
+            if (!empty($email) && !empty($password) && count($validate_email)==0) {
+               
+                //encode password
+                $pwd = hash('sha256', $password);
+                // if all is correct, call service to identify the user(jwt, token or an object)
+                if ($gettoken) {
+                    $signup = $jwt_auth->signup($email, $password, $gettoken);
+                } else {
+                    $signup = $jwt_auth->signup($email, $pwd);
+                }
+                return new JsonResponse($signup);
+            }
+        }
+        // If all is ok response
+        return $this->resjson($data);
     }
 }
