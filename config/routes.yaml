@@ -5,12 +5,18 @@
 # Routes User Controller
 
 user:
-    path: /user
-    controller: App\Controller\UserController::index
-    methods: [POST]
+  path: /user
+  controller: App\Controller\UserController::index
+  methods: [POST]
 
+
+createuser:
+  path: /user/create
+  controller: App\Controller\UserController::createUser
+  methods: [POST]
+  
 # Routes Machines Controller
 
 machines:
-    path: /machines
-    controller: App\Controller\MachinesController::index
+  path: /machines
+  controller: App\Controller\MachinesController::index
