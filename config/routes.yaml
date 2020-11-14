@@ -30,3 +30,8 @@ user_edit:
 machines:
   path: /machines
   controller: App\Controller\MachinesController::index
+
+newmachine:
+  path: /machines/new
+  controller: App\Controller\MachinesController::newMachine
+  methods: [POST]
