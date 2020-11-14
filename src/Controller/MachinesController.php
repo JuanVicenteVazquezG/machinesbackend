@@ -171,4 +171,14 @@ class MachinesController extends AbstractController
 
         return $this->resjson($data);
     }
+    public function myMachineDetail(Request $request, JwtAuth $jwt_auth, $id=null){
+        $data = [
+            'status'=> 'error',
+            'code'=>400,
+            'message'=>'Machine not found',
+            'id'=>$id,
+        ];
+
+        return $this->resjson($data);
+    }
 }

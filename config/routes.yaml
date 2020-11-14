@@ -39,3 +39,8 @@ my_list_machine:
   path: /machines/mylistmachine
   controller: App\Controller\MachinesController::myListMachine
   methods: [GET]
+
+my_machine_detail:
+  path: /machines/mymachinedetail/{id}
+  controoler: App\Controller\MachinesController::myMachineDetail
+  methods: [GET]
