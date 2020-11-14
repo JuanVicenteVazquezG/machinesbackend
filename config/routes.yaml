@@ -35,6 +35,11 @@ newmachine:
   controller: App\Controller\MachinesController::newMachine
   methods: [POST]
 
+editmachine:
+  path: /machines/edit/{id}
+  controller: App\Controller\MachinesController::newMachine
+  methods: [PUT]
+
 my_list_machine:
   path: /machines/mylistmachine
   controller: App\Controller\MachinesController::myListMachine

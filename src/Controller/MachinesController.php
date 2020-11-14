@@ -39,7 +39,7 @@ class MachinesController extends AbstractController
         ]);
     }
 
-    public function newMachine(Request $request, JwtAuth $jwt_auth)
+    public function newMachine(Request $request, JwtAuth $jwt_auth, $id = null)
     {
         $data = [
             'status'=>'error',
@@ -86,31 +86,60 @@ class MachinesController extends AbstractController
                     $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
                 'id'=> $user_id
                 ]);
+                    if ($id==null) {
+                        //Create and Save object
+                        $machine = new Machine();
+                        $machine->setUser($user);
+                        $machine->setBrand($brand);
+                        $machine->setModel($model);
+                        $machine->setManufacturer($manufacturer);
+                        $machine->setPrice($price);
+                        $machine->setImageFrontUrl($image_front_url);
+                        $machine->setImageLateralUrl($image_lateral_url);
+                        $machine->setImageThumbnailUrl($image_thumbnail_url);
+                        $createdAt = new \DateTime('now');
+                        $updatedAt = new \DateTime('now');
+                        $machine->setCreatedAt($createdAt);
+                        $machine->setUpdatedAt($updatedAt);
+                        // Save the new Machine in database
+                        $em->persist($machine);
+                        $em->flush();
 
-                    //Create and Save object
-                    $machine = new Machine();
-                    $machine->setUser($user);
-                    $machine->setBrand($brand);
-                    $machine->setModel($model);
-                    $machine->setManufacturer($manufacturer);
-                    $machine->setPrice($price);
-                    $machine->setImageFrontUrl($image_front_url);
-                    $machine->setImageLateralUrl($image_lateral_url);
-                    $machine->setImageThumbnailUrl($image_thumbnail_url);
-                    $createdAt = new \DateTime('now');
-                    $updatedAt = new \DateTime('now');
-                    $machine->setCreatedAt($createdAt);
-                    $machine->setUpdatedAt($updatedAt);
-                    // Save the new Machine in database
-                    $em->persist($machine);
-                    $em->flush();
-
-                    $data=[
+                        $data=[
                         'status'=>'success',
                         'code'=>200,
                         'message'=>'The new machine was saved!',
                         'machine'=>$machine
                     ];
+                    }else{
+                    $machine = $this->getDoctrine()->getRepository(Machine::class)->findOneBy([
+                        'id'=>$id,
+                        'user'=>$identity->sub
+                    ]);
+                    if($machine && is_Object($machine)){
+                        $machine->setBrand($brand);
+                        $machine->setModel($model);
+                        $machine->setManufacturer($manufacturer);
+                        $machine->setPrice($price);
+                        $machine->setImageFrontUrl($image_front_url);
+                        $machine->setImageLateralUrl($image_lateral_url);
+                        $machine->setImageThumbnailUrl($image_thumbnail_url);
+                        $createdAt = new \DateTime('now');
+                        $updatedAt = new \DateTime('now');
+                        $machine->setCreatedAt($createdAt);
+                        $machine->setUpdatedAt($updatedAt);
+
+                        $em->persist($machine);
+                        $em->flush();
+                        $data=[
+                            'status'=>'success',
+                            'code'=>200,
+                            'message'=>'The machine has been updated!',
+                            'machine'=>$machine
+                        ];
+                    }
+
+                    }
                 }
             }
             return $this->resjson($data);
@@ -219,7 +248,7 @@ class MachinesController extends AbstractController
             $em = $doctrine->getManager();
             $machine = $doctrine->getRepository(Machine::class)->findOneBy(['id'=>$id]);
 
-            if ($machine && is_object($machine) && $identity->sub == $machine->getUser()->getId()){
+            if ($machine && is_object($machine) && $identity->sub == $machine->getUser()->getId()) {
                 $em->remove($machine);
                 $em->flush();
                 $data = [
