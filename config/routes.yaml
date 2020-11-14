@@ -9,7 +9,6 @@ user:
   controller: App\Controller\UserController::index
   methods: [POST]
 
-
 createuser:
   path: /user/create
   controller: App\Controller\UserController::createUser
@@ -24,7 +23,7 @@ user_edit:
   path: /user/edit
   controller: App\Controller\UserController::edit
   methods: [PUT]
-  
+
 # Routes Machines Controller
 
 machines:
@@ -35,3 +34,8 @@ newmachine:
   path: /machines/new
   controller: App\Controller\MachinesController::newMachine
   methods: [POST]
+
+my_list_machine:
+  path: /machines/mylistmachine
+  controller: App\Controller\MachinesController::myListMachine
+  methods: [GET]
