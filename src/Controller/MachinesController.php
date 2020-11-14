@@ -171,14 +171,34 @@ class MachinesController extends AbstractController
 
         return $this->resjson($data);
     }
-    public function myMachineDetail(Request $request, JwtAuth $jwt_auth, $id=null){
+    public function myMachineDetail(Request $request, JwtAuth $jwt_auth, $id=null)
+    {
         $data = [
             'status'=> 'error',
             'code'=>400,
             'message'=>'Machine not found',
             'id'=>$id,
         ];
+        // Retrieves de Token and check if is correct
+        $token = $request->headers->get('Authorization');
+        $authCheck = $jwt_auth->checkToken($token);
+       
+        if ($authCheck) {
+            //Extract user identity
+            $identity = $jwt_auth->checkToken($token);
+            // Extract machine object based in user id
+            $machine = $this->getDoctrine()->getRepository(Machines::class)->findOneBy(['id' => $id]);
+            // check if the machine exist and is property of user identified
 
+            if ($machine && is_object($machine) && $identity->sub == $machine->getUser()->getId()) {
+                $data = [
+                    'status'=> 'success',
+                    'code'=>200,
+                    'machine' => $machine
+                ];
+            }
+        }
+        // return a response
         return $this->resjson($data);
     }
 }
