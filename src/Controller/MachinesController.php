@@ -201,4 +201,35 @@ class MachinesController extends AbstractController
         // return a response
         return $this->resjson($data);
     }
+
+    public function removeMachine(Request $request, JwtAuth $jwt_auth, $id=null)
+    {
+        $data = [
+            'status'=> 'error',
+            'code'=>404,
+            'message' => 'Machine not found!'
+        ];
+        // Retrieves de Token and check if is correct
+        $token = $request->headers->get('Authorization');
+        $authCheck = $jwt_auth->checkToken($token);
+        // if is valid
+        if ($authCheck) {
+            $identity = $jwt_auth->checkToken($token, true);
+            $doctrine = $this->getDoctrine();
+            $em = $doctrine->getManager();
+            $machine = $doctrine->getRepository(Machine::class)->findOneBy(['id'=>$id]);
+
+            if ($machine && is_object($machine) && $identity->sub == $machine->getUser()->getId()){
+                $em->remove($machine);
+                $em->flush();
+                $data = [
+                    'status'=> 'success',
+                    'code'=>200,
+                    'machine'=> $machine
+                ];
+            }
+        }
+        
+        return $this->resjson($data);
+    }
 }

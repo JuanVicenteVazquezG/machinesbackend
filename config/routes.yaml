@@ -44,3 +44,9 @@ my_machine_detail:
   path: /machines/mymachinedetail/{id}
   controller: App\Controller\MachinesController::myMachineDetail
   methods: [GET]
+
+machine_remove:
+  path: /machines/remove/{id}
+  controller: App\Controller\MachinesController::removeMachine
+  methods: [DELETE]
+
