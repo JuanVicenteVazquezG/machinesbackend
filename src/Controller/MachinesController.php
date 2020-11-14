@@ -185,9 +185,9 @@ class MachinesController extends AbstractController
        
         if ($authCheck) {
             //Extract user identity
-            $identity = $jwt_auth->checkToken($token);
+            $identity = $jwt_auth->checkToken($token, true);
             // Extract machine object based in user id
-            $machine = $this->getDoctrine()->getRepository(Machines::class)->findOneBy(['id' => $id]);
+            $machine = $this->getDoctrine()->getRepository(Machine::class)->findOneBy(['id' => $id]);
             // check if the machine exist and is property of user identified
 
             if ($machine && is_object($machine) && $identity->sub == $machine->getUser()->getId()) {
