@@ -75,7 +75,7 @@ class UserController extends AbstractController
              !empty($name) &&
              !empty($surname)) {
                 $data = [
-                    'status'=>'sucess',
+                    'status'=>'success',
                     'code'=> 200,
                     'message'=> 'VALIDATED!'
                     ];
@@ -108,14 +108,14 @@ class UserController extends AbstractController
                 $em->persist($user);
                 $em->flush();
                 $data = [
-                    'status'=>'sucess',
+                    'status'=>'success',
                     'code'=> 200,
                     'message'=> 'User created successfully!',
                     'user'=> $user
                     ];
             } else {
                 $data = [
-                    'status'=>'sucess',
+                    'status'=>'error',
                     'code'=> 400,
                     'message'=> 'User already exist!'
                     ];
@@ -220,7 +220,7 @@ class UserController extends AbstractController
                  !empty($name) &&
                  !empty($surname)) {
                     $data = [
-                        'status'=>'sucess',
+                        'status'=>'success',
                         'code'=> 200,
                         'message'=> 'VALIDATED!'
                         ];
