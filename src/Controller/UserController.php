@@ -58,7 +58,7 @@ class UserController extends AbstractController
         // Default response
         $data = [
     'status'=>'error',
-    'code'=> 200,
+    'code'=> 400,
     'message'=> 'The user has not been created!'
     ];
         // check and validate data
@@ -91,8 +91,6 @@ class UserController extends AbstractController
             // Encrypt password
             $pwd = hash('sha256', $password);
             $user->setPassword($pwd);
-            // var_dump($user);
-            // die();
             // Check if user exists (duplicates)
 
             // if it doesn't exist, save it in the database
@@ -135,8 +133,8 @@ class UserController extends AbstractController
 
         //Array by Default to return
         $data = [
-                'status'=>'success',
-                'code'=>200,
+                'status'=>'error',
+                'code'=>400,
                 'message'=> 'User cannot be identified!'
             ];
         //check and validate data

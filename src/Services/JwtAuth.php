@@ -51,6 +51,7 @@ class JwtAuth
         } else {
             $data = [
                 'status'=> 'error',
+                'code'=>400,
                 'message'=> 'The email or password is not correct!'
             ];
         }
